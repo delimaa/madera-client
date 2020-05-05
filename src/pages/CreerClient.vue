@@ -124,8 +124,11 @@ export default {
 
       this.loading = true;
 
+      let cClient;
+
       try {
-        await this.$axios.post("clients", client);
+        const response = await this.$axios.post("clients", client);
+        cClient = response.data;
       } catch (e) {
         this.$q.notify({ type: "negative", message: e.message });
         this.loading = false;
@@ -137,6 +140,8 @@ export default {
       this.$refs.form.reset();
 
       this.loading = false;
+
+      this.$router.push(`/clients/${cClient.id}`);
     }
   }
 };

@@ -41,9 +41,9 @@
                   filled
                   v-model="projet.date"
                   label="Date"
-                  mask="date"
-                  fill-mask="____/__/__"
-                  :rules="['date']"
+                  mask="##/##/####"
+                  fill-mask="__/__/____"
+                  :rules="dateRules"
                 >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
@@ -52,7 +52,11 @@
                         transition-show="scale"
                         transition-hide="scale"
                       >
-                        <q-date v-model="projet.date" @input="() => $refs.qDateProxy.hide()" />
+                        <q-date
+                          v-model="projet.date"
+                          @input="() => $refs.qDateProxy.hide()"
+                          mask="DD/MM/YYYY"
+                        />
                       </q-popup-proxy>
                     </q-icon>
                   </template>
@@ -95,10 +99,13 @@
             <div class="row q-col-gutter-md">
               <div class="col-xs-12" v-for="(mod, i) in modules" :key="i">
                 <div class="row q-col-gutter-md">
-                  <div class="col-xs-12 col-sm-8">
+                  <div class="col-xs-12 col-md-4">
+                    <module-category-selector v-model="mod.category" />
+                  </div>
+                  <div class="col-xs-12 col-md-5">
                     <q-input v-model="mod.nom" label="Module" filled />
                   </div>
-                  <div class="col-xs-12 col-sm-4">
+                  <div class="col-xs-12 col-md-3">
                     <q-input v-model="mod.dimensions" label="Dimensions" filled />
                   </div>
                 </div>
@@ -211,6 +218,7 @@ import GammeSelector from "../components/GammeSelector";
 import FinitionSelector from "../components/FinitionSelector";
 import IsolantSelector from "../components/IsolantSelector";
 import CouvertureSelector from "../components/CouvertureSelector";
+import ModuleCategorySelector from "../components/ModuleCategorySelector";
 import { date } from "quasar";
 const { formatDate } = date;
 
@@ -220,7 +228,8 @@ export default {
     GammeSelector,
     FinitionSelector,
     IsolantSelector,
-    CouvertureSelector
+    CouvertureSelector,
+    ModuleCategorySelector
   },
   data() {
     return {
@@ -233,8 +242,9 @@ export default {
         nom: "",
         date: ""
       },
-      modules: [{ nom: "", dimensions: "" }],
-      loading: false
+      modules: [{ nom: "", dimensions: "", category: "" }],
+      loading: false,
+      dateRules: [v => /[0-9]{2}\/[0-9]{2}\/[0-9]{4}/.test(v || "")]
     };
   },
   computed: {
@@ -264,6 +274,11 @@ export default {
 
       this.loading = true;
 
+      this.projet.date = this.projet.date
+        .split("/")
+        .reverse()
+        .join("/");
+
       const { data: projet } = await this.$axios.post("projets", {
         ...this.projet,
         client: this.client.id,
@@ -286,7 +301,7 @@ export default {
       this.$router.push(`/projets/${projet.id}`);
     },
     addModule() {
-      this.modules.push({ nom: "", dimensions: "" });
+      this.modules.push({ nom: "", dimensions: "", category: "" });
     },
     removeModule() {
       if (this.modules.length > 1) {

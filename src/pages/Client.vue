@@ -5,6 +5,7 @@
         <q-breadcrumbs>
           <q-breadcrumbs-el label="Accueil" icon="home" to="/" />
           <q-breadcrumbs-el label="Clients" icon="supervisor_account" />
+          <q-breadcrumbs-el label="Liste des clients" icon="list" to="/clients" />
           <q-breadcrumbs-el label="Client" icon="account_box" :to="`/clients/${id}`" />
         </q-breadcrumbs>
       </div>

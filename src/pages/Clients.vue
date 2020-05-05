@@ -72,13 +72,15 @@ export default {
           name: "nom",
           field: "nom",
           label: "Nom",
-          align: "left"
+          align: "left",
+          sortable: true
         },
         {
           name: "prenom",
           field: "prenom",
           label: "Prenom",
-          align: "left"
+          align: "left",
+          sortable: true
         }
       ]
     };

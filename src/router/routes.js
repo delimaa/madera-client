@@ -1,4 +1,5 @@
 const routes = [
+  { path: "/auth", component: () => import("pages/Auth.vue") },
   {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),

@@ -5,6 +5,7 @@
         <q-breadcrumbs>
           <q-breadcrumbs-el label="Accueil" icon="home" to="/" />
           <q-breadcrumbs-el label="Projets" icon="assignment" />
+          <q-breadcrumbs-el label="Liste des projets" icon="list" to="/projets" />
           <q-breadcrumbs-el label="Projet" icon="assessment" />
         </q-breadcrumbs>
       </div>
@@ -101,15 +102,25 @@
           </q-card-section>
 
           <q-card-section>
+            <q-chip square color="primary" text-color="white">{{projet.modules.length}} modules</q-chip>
+          </q-card-section>
+
+          <q-card-section>
             <q-markup-table separator="cell" flat>
               <tbody>
                 <tr>
-                  <th>Module</th>
-                  <th>Dimensions</th>
+                  <th class="text-left">Module</th>
+                  <th class="text-left">Dimensions</th>
+                  <th class="text-left">Prix (€)</th>
                 </tr>
                 <tr v-for="(mod, i) in projet.modules" :key="i">
                   <td>{{mod.nom}}</td>
                   <td>{{mod.dimensions}}</td>
+                  <td>{{mod.prix.toLocaleString()}}</td>
+                </tr>
+                <tr>
+                  <td colspan="2" class="text-right">Total HT</td>
+                  <td class="text-bold">{{total.toLocaleString()}}</td>
                 </tr>
               </tbody>
             </q-markup-table>
@@ -133,9 +144,14 @@ export default {
   computed: {
     id() {
       return this.$route.params.id;
+    },
+    total() {
+      return this.projet.modules.reduce((sum, mod) => (sum += mod.prix), 0);
     }
   },
-  methods: { formatDate },
+  methods: {
+    formatDate
+  },
   async created() {
     this.$q.loading.show();
 

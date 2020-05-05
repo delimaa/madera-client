@@ -74,35 +74,40 @@ export default {
           name: "nom",
           field: "nom",
           label: "Nom",
-          align: "left"
+          align: "left",
+          sortable: true
         },
         {
           name: "date",
           field: "date",
           label: "Date",
           align: "left",
-          format: v => formatDate(v, "DD/MM/YYYY")
+          format: v => formatDate(v, "DD/MM/YYYY"),
+          sortable: true
         },
         {
           name: "client",
           field: "client",
           label: "Client",
           align: "left",
-          format: v => `${v.nom} ${v.prenom}`
+          format: v => `${v.nom} ${v.prenom}`,
+          sortable: true
         },
         {
           name: "gamme",
           field: "gamme",
           label: "Gamme",
           align: "left",
-          format: v => v.nom
+          format: v => v.nom,
+          sortable: true
         },
         {
           name: "modules",
           field: "modules",
           label: "Nombre de modules",
           align: "left",
-          format: v => v.length
+          format: v => v.length,
+          sortable: true
         }
       ]
     };

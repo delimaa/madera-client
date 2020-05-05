@@ -15,6 +15,31 @@
           Madera -
           <span class="text-weight-light">Projets & Devis</span>
         </q-toolbar-title>
+
+        <div v-if="user" class="row items-center">
+          <q-btn-dropdown color="white" text-color="primary" icon="face" :label="shortLogin">
+            <q-list separator>
+              <q-item clickable>
+                <q-item-section side>
+                  <q-icon name="portrait" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>Voir le profil</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item>
+                <q-btn
+                  unelevated
+                  label="Déconnexion"
+                  icon="exit_to_app"
+                  color="primary"
+                  @click="disconnect"
+                  :loading="disconnectLoading"
+                />
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -44,7 +69,7 @@
           label="Projets"
           caption="Voir ou initier un projet"
         >
-          <q-item :inset-level="1" to="/projets">
+          <q-item :inset-level="1" exact to="/projets">
             <q-item-section avatar>
               <q-icon name="list" />
             </q-item-section>
@@ -65,7 +90,7 @@
           label="Clients"
           caption="Lister ou ajouter"
         >
-          <q-item :inset-level="1" to="/clients">
+          <q-item :inset-level="1" exact to="/clients">
             <q-item-section avatar>
               <q-icon name="list" />
             </q-item-section>
@@ -89,11 +114,43 @@
 </template>
 
 <script>
+import { SessionStorage } from "quasar";
+
 export default {
   data() {
     return {
-      leftDrawerOpen: false
+      leftDrawerOpen: false,
+      user: null,
+      disconnectLoading: false
     };
+  },
+  computed: {
+    shortLogin() {
+      if (!this.user) return;
+
+      const { login } = this.user;
+
+      if (login.length > 10) return login.slice(0, 10) + "...";
+
+      return login;
+    }
+  },
+  methods: {
+    async disconnect() {
+      this.disconnectLoading = true;
+      await new Promise(resolve => setTimeout(resolve, 500));
+      this.disconnectLoading = false;
+      SessionStorage.remove("user");
+      this.$router.push("/auth");
+    }
+  },
+  beforeCreate() {
+    const user = SessionStorage.getItem("user");
+
+    if (!user) this.$router.replace("/auth");
+  },
+  mounted() {
+    this.user = SessionStorage.getItem("user");
   }
 };
 </script>
